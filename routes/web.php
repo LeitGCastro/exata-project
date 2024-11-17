@@ -15,11 +15,15 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/tasks', [TaskController::class, 'getAll'])->middleware(['auth', 'verified'])->name('allTasks');
+Route::middleware('auth')->group(function () {
+    Route::get('/tasks', [TaskController::class, 'getAll'])->name('dashboard');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('task.store');
+    Route::put('/tasks', [TaskController::class, 'updateStatus'])->name('task.update.status');
+});
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
