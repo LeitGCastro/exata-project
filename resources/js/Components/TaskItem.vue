@@ -6,25 +6,19 @@ export type taskProps = {
     id: Number
     title: string
     status: string
+    description?: string
     userName?: string
 }
 
-const statusTask = [{
-    "key" : "pendente", 
-    "title" : "Pendente",
-    "color" : ""
-}, {
-    "key" : "em andamento",
-    "title" : "Em andamento",
-    "color" : ""
-}, {
-    "key" : "concluida",
-    "title" : "Concluida",
-    "color" : ""
-}]
+type statusTask = {
+    key: string
+    title: string
+    color: string
+}
 
 const props = defineProps<{
     task: taskProps
+    statusTask: statusTask[]
 }>();
 
 const form = useForm({
@@ -33,9 +27,8 @@ const form = useForm({
 });
 const changeStatus = () => {
     console.log(form.status)
-    form.put(route('task.update.status'),{
+    form.put(route('task.updatestatus'),{
         onSuccess: () => {
-            console.log('certo')
         }
     })
 };
@@ -43,16 +36,14 @@ const changeStatus = () => {
 </script>
 
 <template>
-    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div
-            class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
-        >
-            <div class="px-4 py-3 text-gray-900 flex justify-between items-center">
+    <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg hover:bg-slate-200">
+        <div class="px-4 py-3 text-gray-900 flex justify-between items-center hover:bg-slate-200">
+            <a :href="route('task.form', {task_id: task.id})" class="w-full hover:cursor-pointer hover:underline ">
                 <h3>{{ task.title }}</h3>
-                <select @change="changeStatus()" v-model="form.status" class="py-0 text-right border-0 focus:border-0 focus:ring-0">
-                    <option v-for="status in statusTask" :value="status.key" :key="status.key">{{ status.title }}</option>
-                </select>
-            </div>
+            </a>
+            <select @change="changeStatus()" v-model="form.status" class="py-0 text-right border-0 bg-transparent focus:border-0 focus:ring-0">
+                <option v-for="status in statusTask" :value="status.key" :key="status.key">{{ status.title }}</option>
+            </select>
         </div>
     </div>
 </template>

@@ -16,9 +16,11 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/tasks', [TaskController::class, 'getAll'])->name('dashboard');
+    Route::get('/tasks', [TaskController::class, 'index'])->name('dashboard');
+    Route::get('/tasks/{task_id}', [TaskController::class, 'taskForm'])->name('task.form');
     Route::post('/tasks', [TaskController::class, 'store'])->name('task.store');
-    Route::put('/tasks', [TaskController::class, 'updateStatus'])->name('task.update.status');
+    Route::put('/tasks', [TaskController::class, 'update'])->name('task.update');
+    Route::put('/tasks/status', [TaskController::class, 'updateStatus'])->name('task.updatestatus');
 });
 
 // Route::get('/dashboard', function () {
