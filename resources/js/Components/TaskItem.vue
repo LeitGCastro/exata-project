@@ -57,7 +57,7 @@ const changeStatus = () => {
             </div>
             <a :href="route('task.form', {task_id: task.id})" v-if="task.description || task.user" class="mt-2 border-t-2 border-zinc-300 text-zinc-500 flex justify-between items-center">
                 <p>{{ task.description }}</p>
-                <h5 v-if="task.user">{{ task.user.name }}</h5>
+                <h5 v-if="task.user" class="min-w-fit" title="Usuário">{{ task.user.name }}</h5>
             </a>            
         </div>
     </div>
