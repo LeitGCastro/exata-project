@@ -20,7 +20,7 @@ class TaskController extends Controller
     private function getAllTasks() : Collection {
         $user = Auth::user();
         $tasks = $user->isAdmin() 
-            ? $tasks = Task::all() 
+            ? Task::with('user')->get() 
             : $user->tasks;
     
         return $tasks;
