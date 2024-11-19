@@ -7,23 +7,20 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
-    tasks?: taskProps[],
+    tasks: taskProps[],
     task?: taskProps,
     successMessage?: string 
 }>();
 
 const statusTask = [{
     "key" : "pendente", 
-    "title" : "Pendente",
-    "color" : ""
+    "title" : "Pendente"
 }, {
     "key" : "em andamento",
-    "title" : "Em andamento",
-    "color" : ""
+    "title" : "Em andamento"
 }, {
     "key" : "concluida",
-    "title" : "Concluida",
-    "color" : ""
+    "title" : "Concluida"
 }]
 
 const createTaskForm = useForm({
@@ -45,6 +42,19 @@ const submitUpdateTask = () => {
         onSuccess: () => {
             updateTaskForm.reset();
         },
+    });
+}
+
+const filterForm = useForm({
+    status: "",
+    sortMethod: "desc"
+})
+const filtredTasks = () => {
+    const filtred = !filterForm.status ? props.tasks : props.tasks.filter((task) => task.status === filterForm.status)
+    return filtred.sort((a,b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return filterForm.sortMethod === "asc" ? dateA - dateB : dateB - dateA
     });
 }
 </script>
@@ -80,8 +90,16 @@ const submitUpdateTask = () => {
                         </form>
                     </div>
 
+                    <div class="mb-3 mr-4 flex justify-end">
+                        <select v-model="filterForm.status" class="py-0 text-center border-0 border-b-2 border-zinc-200 bg-transparent focus:border-b-2 focus:ring-0">
+                            <option value="">Todos</option>
+                            <option v-for="status in statusTask" :value="status.key" :key="status.key">{{ status.title }}</option>
+                        </select>
+                        <span @click="" class="py-0 text-center border-0 border-b-2 border-zinc-200 bg-transparent hover:cursor-pointer focus:border-b-2 focus:ring-0 min-w-fit border-l-2 pl-5">Data de criação</span>
+                    </div>
+
                     <div class="space-y-3">
-                        <TaskItem v-for="task in tasks" :task="task" :status-task="statusTask"/>
+                        <TaskItem v-for="task in filtredTasks()" :task="task" :status-task="statusTask"/>
                     </div>
 
                 </div>
