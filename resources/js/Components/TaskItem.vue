@@ -34,7 +34,7 @@ const form = useForm({
 });
 const changeStatus = () => {
     form.status = props.task.status
-    form.put(route('task.updatestatus'),{
+    form.put(route('task.update.status', {task_id: props.task.id}),{
         onSuccess: () => {
         }
     })

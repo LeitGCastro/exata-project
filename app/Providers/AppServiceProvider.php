@@ -25,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
         Gate::define('update-task', [TaskPolicy::class, 'update']);
+        Gate::define('delete-task', [TaskPolicy::class, 'delete']);
     }
 }

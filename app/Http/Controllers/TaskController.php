@@ -8,7 +8,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 use App\Models\Task;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
@@ -17,18 +16,9 @@ use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
-    private function getAllTasks() : Collection {
-        $user = Auth::user();
-        $tasks = $user->isAdmin() 
-            ? Task::with('user')->get() 
-            : $user->tasks;
-    
-        return $tasks;
-    }
-
     public function index() : Response {
         return Inertia::render('Dashboard', [
-            'tasks' => $this->getAllTasks()
+            'tasks' => Auth::user()->getTasks()
         ]);
     }
 
@@ -36,7 +26,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($task_id);        
 
         return Inertia::render('Dashboard', [
-            'tasks' => $this->getAllTasks(),
+            'tasks' => Auth::user()->getTasks(),
             'task' => $task
         ]);
     }
@@ -55,15 +45,14 @@ class TaskController extends Controller
         return Redirect::route('dashboard')->with('success', 'Tarefa criada com sucesso!');
     }
 
-    public function update(Request $request) {
+    public function update(Request $request, $task_id) {
         $validated = $request->validate([
-            'id' => 'required|integer',
             'title' => 'required|string|max:255',
             'status' => 'required|string|max:255',
             'description' => 'nullable|string'
         ]);
 
-        $task = Task::findOrFail($validated['id']);
+        $task = Task::findOrFail($task_id);
         if (!Gate::allows('update-task', $task)) abort(403);
 
         $task->status = $validated['status'];
@@ -71,22 +60,30 @@ class TaskController extends Controller
         $task->description = $validated['description'];
         $task->save();
 
-        // ** Implementar endpoint com axios para não ter que redirecionar o usuário
-        return Redirect::route('dashboard')->with('success', 'Status atualizado');
+        return Redirect::route('dashboard')->with('success', 'Tarefa atualizada');
     }
 
-    public function updateStatus(Request $request) {
+    public function updateStatus(Request $request, $task_id) {
         $validated = $request->validate([
-            'id' => 'required|integer',
             'status' => 'required|string|max:255'
         ]);
 
-        $task = Task::findOrFail($validated['id']);
+        $task = Task::findOrFail($task_id);
         if (!Gate::allows('update-task', $task)) abort(403);
 
         $task->status = $validated['status'];
         $task->save();
 
         return Redirect::route('dashboard')->with('success', 'Status atualizado');
+    }
+
+    public function delete($task_id) {
+
+        $task = Task::findOrFail($task_id);
+        if (!Gate::allows('delete-task', $task)) abort(403);
+
+        $task->delete();
+
+        return Redirect::route('dashboard')->with('success', 'Tarefa removida');
     }
 }
