@@ -3,6 +3,9 @@ import TaskItem, { taskProps, statusTaskProps } from '@/Components/TaskItem.vue'
 import TaskForm from '@/Components/TaskForm.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
@@ -49,6 +52,7 @@ function sortTasks() {
         : dateB - dateA
     })
 }
+sortTasks()
 
 const filtredTasks = () => {
     return !filterForm.status 
@@ -71,7 +75,7 @@ const filtredTasks = () => {
                                     <input
                                         class="block w-full border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500"
                                         v-model="createTaskForm.title"
-                                        placeholder="Adicione uma nova tarefa..." 
+                                        placeholder="Criar uma nova tarefa..." 
                                         ref="input"
                                     />
                                     <p v-if="createTaskForm.errors.title" class="text-red-500">{{ createTaskForm.errors.title }}</p>
@@ -93,7 +97,11 @@ const filtredTasks = () => {
                                 <option value="">Todos</option>
                                 <option v-for="status in statusTask" :value="status.key" :key="status.key">{{ status.title }}</option>
                             </select>
-                            <span @click="sortTasks()" class="py-0 text-center border-0 border-zinc-200 hover:cursor-pointer focus:border-b-2 focus:ring-0 min-w-fit border-l-2 pl-4">Data de criação</span>
+                            <span @click="sortTasks()" class="py-0 text-center border-0 border-zinc-200 hover:cursor-pointer focus:border-b-2 focus:ring-0 min-w-fit border-l-2 pl-4">
+                                Data de criação 
+                                <FontAwesomeIcon v-if="filterForm.sortIsAscending" :icon="faArrowDown"/>
+                                <FontAwesomeIcon v-if="!filterForm.sortIsAscending" :icon="faArrowUp"/>
+                            </span>
                         </div>
                     </div>
 
