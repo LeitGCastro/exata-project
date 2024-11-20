@@ -2,17 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Auth::check() ? redirect('/dashboard') : redirect('/login');
 });
 
 Route::middleware('auth')->group(function () {
@@ -22,10 +16,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/tasks', [TaskController::class, 'update'])->name('task.update');
     Route::put('/tasks/status', [TaskController::class, 'updateStatus'])->name('task.updatestatus');
 });
-
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
