@@ -1,66 +1,92 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+# Gerenciamento de Tarefas
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este é um sistema de gerenciamento de tarefas construído com Laravel integrado com o framework Vue.js. O Sistema suporta autenticação de usuários, criação, visualização, edição e exclusão de tarefas e ainda conta com diferentes níveis de permissão.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Durante o desenvolvimento foram utilzados algumas ferramentas para auxiliar e otimizar o desenvolvimento, dentre elas:
+* Laravel 11
+* Vue.js 3 (integrado ao laravel a partir do Inertia)
+* Laravel Breeze (pacote de funcionalidades para facilitar a autencticação de usuário)
+* Tailwind CSS
+* FontAwesome icons
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Requisitos do Sistema
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Antes de começar, certifique-se que seu ambiente possua os seguintes requisitos:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.1 ou superior
+- Composer 2.x
+- MySQL 8.x ou MariaDB (ou SQLite para desenvolvimento)
+- Node.js 18.x (para assets front-end)
+- NPM ou Yarn
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalação e Configuração
 
-### Premium Partners
+Siga estas etapas para configurar o projeto em sua máquina local:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 1. Clone o Repositório
 
-## Contributing
+```
+    git clone https://github.com/LeitGCastro/exata-project
+    cd exata-project
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Instale as dependencias
 
-## Code of Conduct
+```
+    composer install
+    npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Configure o ambiente
+Crie uma cópia dos arquivos de configuração 
 
-## Security Vulnerabilities
+```
+    cp .env.example .env
+    cp .env.testing.example .env.testing # Nescessário para rodas os testes
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Gere a chave de aplicação
+Gere uma chave criptografada para o laravel e adicione aos arquivos de configuração na variavel `APP_KEY`
 
-## License
+```
+    php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Configure o banco de dados
+Por padrão o banco de dados está configurado para rodar localmente em um arquivo SQLite, caso queira rodar em um banco de dados externo altere as configurações no arquivo `.env` 
+
+```
+    php artisan migrate --seed #roda as migrations já populando as tabelas
+```
+Obs.: Caso tenha problemas com o arquivo SQLite confira se o arquivo `database.sqlite` existe dentro da pasta database.
+```
+    touch database/database.sqlite
+```
+
+### 6. Rode a aplicação
+Inicialize o servidor e o front-end
+Credenciais de adminstrador:
+- adm@teste.com.br
+- randomPassword123
+
+```
+    npm run dev 
+    php artisan serve
+```
+
+### Rodar testes
+O sistema possui teste de integração e de funcionalidade mesclados baseados em PHPUnit.  
+Para rodar os testes é nescessário configurar o arquivo `.env.testing`.
+
+```
+    php artisan migrate --env=testing 
+    php artisan test
+```
